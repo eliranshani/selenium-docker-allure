@@ -1,5 +1,5 @@
 # selenium-docker-allure
-Running Selenium tests with py.test testing convention with docker support
+Running Selenium tests under py.test convention with docker support.
 
 ## Requirements
 
@@ -32,6 +32,10 @@ This project allows other developers to understand how to:
 1. Create auto tests in python under py.test convention
 2. Run tests with Docker
 3. Export results into Allure report
+
+## Links
+
+# [Additional links here] (./additional_info.md)
 
 ## Contributors
 

@@ -13,7 +13,7 @@ Running Selenium tests under py.test convention with docker support.
 $ ./scripts/run-tests.bash
 
 # Run with extra py.test arguments
-$ ./scripts/run-bza-gui.bash --env=$ENV tests/test_purhcase_tickets.py --verbose
+$ ./scripts/run-tests.bash --env=$ENV tests/test_purhcase_tickets.py --verbose
 ```
 
 ### Run allure to generate allure report
@@ -23,7 +23,7 @@ $ ./scripts/generate-allure-report.bash blazedemo-app
 
 ### Open allure report
 ```bash
-$ cd ./bza-gui/allure-report/
+$ cd ./blazedemo-app/allure-report/
 $ python -m SimpleHTTPServer 8000
 $ open http://localhost:8000
 ```

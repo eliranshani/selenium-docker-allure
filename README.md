@@ -35,7 +35,7 @@ This project allows other developers to understand how to:
 
 ## Links
 
-# [Additional links here] (./additional_info.md)
+# [Additional links here](./additional_info.md)
 
 ## Contributors
 

@@ -1,0 +1,7 @@
+.idea/.name
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+
+*.pyc
+.idea/preferred-vcs.xml

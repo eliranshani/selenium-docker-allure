@@ -42,6 +42,7 @@ This project allows other developers to understand how to:
 ## Contributors
 
 Gilad Peleg
+Elad Kolander
 Eliran Shani
 
 ## License

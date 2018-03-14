@@ -67,7 +67,13 @@ Docker is an open platform for developers and sysadmins to build, ship, and run 
 
 > **Note**:  read more about **Docker** [here](https://www.docker.com/what-docker)
 
-----------
+
+Docker hub
+-------------
+
+Dev-test pipeline automation, 100,000+ free apps, public and private registries.
+
+> **Note**:  read more about **Docker** [here](https://hub.docker.com/)
 
 
 Jenkins

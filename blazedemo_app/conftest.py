@@ -14,7 +14,6 @@ def driver(request):
         browser = webdriver.Chrome()
         browser.get("about:blank")
         browser.implicitly_wait(10)
-        browser.maximize_window()
         return browser
     else:
         print 'only chrome is supported at the moment'

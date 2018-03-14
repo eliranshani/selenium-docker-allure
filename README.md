@@ -1,7 +1,7 @@
 # selenium-docker-allure
 Running Selenium tests under py.test convention with docker support.
 
-![Carpe Diem - Seize the day](files/shark.png?raw=true "Carpe Diem")
+![Carpe Diem - Seize the day](shark.png?raw=true "Carpe Diem")
 
 ## Requirements
 
@@ -18,12 +18,12 @@ $ ./scripts/run-tests.bash --env=$ENV tests/test_purhcase_tickets.py --verbose
 
 ### Run allure to generate allure report
 ```bash
-$ ./scripts/generate-allure-report.bash blazedemo-app
+$ ./scripts/generate-allure-report.bash blazedemo_app
 ```
 
 ### Open allure report
 ```bash
-$ cd ./blazedemo-app/allure-report/
+$ cd ./blazedemo_app/allure-report/
 $ python -m SimpleHTTPServer 8000
 $ open http://localhost:8000
 ```

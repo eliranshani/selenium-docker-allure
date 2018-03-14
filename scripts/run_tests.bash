@@ -1,19 +1,30 @@
 #!/usr/bin/env bash
 
-PYTEST_ARGUMENTS=${@:-tests/test_purchase_tickets.py}
+# Declaring pytest arguments
+export PYTEST_ARGUMENTS=${@:-tests/test_purchase_tickets.py}
 
-AUTOMATION_IMAGE=blazemeter/selenium-framework
-PROJECT_IMAGE=blazemeter/blazedemo-app-selenium
+# Set tag names to folders
+export AUTOMATION_IMAGE=blazemeter/selenium-framework
+export PROJECT_IMAGE=blazemeter/blazedemo-app-selenium
 
-ALLURE_RESULTS_DIR=allure-results
-PROJECT_DIR=blazedemo-app
+export ALLURE_RESULTS_DIR=allure-results
+export PROJECT_DIR=blazedemo_app
 
+# Create tags for selenium-base-image and the project folder
+docker build selenium-base-image -t ${AUTOMATION_IMAGE}
+docker build ${PROJECT_DIR} -t ${PROJECT_IMAGE}
 
-docker build -t $AUTOMATION_IMAGE .
-docker build -t $PROJECT_IMAGE ./$PROJECT_DIR
 
 # Run Selenium py.test with script arguments
+# Map allure output xml to image folder
+# Map root folder to image folder
+# Set the working directory as the root folder in the image
+# Set the PYTHONPATH to the root folder in the image
+# Run the project image as declared above
 docker run --rm \
     -v $(pwd)/$PROJECT_DIR/$ALLURE_RESULTS_DIR:/code/$ALLURE_RESULTS_DIR \
-    $PROJECT_IMAGE \
+    -v $(pwd)/blazedemo_app/:/code/ \
+    -w=/code \
+    -e PYTHONPATH=/code/ \
+    ${PROJECT_IMAGE} \
     "$PYTEST_ARGUMENTS"

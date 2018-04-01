@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -yq \
     unzip=6.0-21 \
     python-pytest=3.0.6-1 \
     libgconf2-4=3.2.6-4+b1 \
-    libncurses5=6.0+20161126-1+deb9u1 \
+    libncurses5=6.0+20161126-1+deb9u2 \
     libxml2-dev=2.9.4+dfsg1-2.2+deb9u2 \
     libxslt-dev \
     libz-dev \

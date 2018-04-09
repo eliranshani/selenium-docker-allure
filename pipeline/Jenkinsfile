@@ -2,7 +2,7 @@ pipeline
         {
             parameters
             {
-                choice(name: 'DRIVER', defaultValue: 'chrome', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
+                choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
                 string(name: 'ENV', description: 'choose environment (ci,qa2,prod,new,qa,stg,dynatrace_qa,dynatrace_prod) ', defaultValue: 'ci')
                 string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
             }

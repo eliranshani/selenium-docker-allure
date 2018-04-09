@@ -1,5 +1,13 @@
 pipeline
         {
+//            agent
+//            {
+//                dockerfile
+//                {
+//                    filename "selenium-base-image/Dockerfile"
+//                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock"
+//                }
+//            }
             parameters
             {
                 choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
@@ -12,15 +20,7 @@ pipeline
                 buildDiscarder(logRotator(numToKeepStr: '100'))
                 timestamps()
             }
-
-            agent
-            {
-                dockerfile
-                {
-                    filename 'selenium-base-image/Dockerfile'
-                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock"
-                }
-            }
+            agent any
             stages
             {
                 stage('SCM: code update')
@@ -50,7 +50,7 @@ pipeline
                     {
                         script
                         {
-                            sh "cp selenium-base-image/Dockerfile . && pwd && docker build -t selenium . && echo OK"
+                            sh "cp selenium-base-image/Dockerfile ."
                             docker.build("blazemeter/selenium_base")
                             sh "cp selenium-automation-run/Dockerfile ."
                             docker.build("blazemeter/selenium_image")

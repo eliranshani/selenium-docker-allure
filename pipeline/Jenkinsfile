@@ -19,7 +19,7 @@ pipeline
             options
                     {
                         buildDiscarder(logRotator(numToKeepStr: '100'))
-                        ansiColor('xterm')
+//                        ansiColor('xterm')
                         timestamps()
                     }
 
@@ -96,47 +96,42 @@ pipeline
                     }
             post
                     {
-                        always
+                        stage('Generate Report')
                                 {
-                                    try
-                                    {
-                                        allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'httpallure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: testsRootFolder+'/allure-results']])
-                                    }
-                                    catch(error)
-                                    {
-                                        echo error.message
-                                    }
-                                    try
-                                    {
-                                        junit testsRootFolder+'/junit-results/TESTS-*.xml'
-                                        env.testSummary = getTestSummary()
-                                        currentBuild.displayName = "${currentBuild.displayName} | ${testSummary}"
-                                    }
-                                    catch(error)
-                                    {
-                                        echo error.message
-                                    }
-                                    script
+                                    steps
                                             {
-                                                if(findStringInBuildLog("INTERNALERROR>"))
-                                                {
-                                                    currentBuild.displayName = "${currentBuild.displayName} | *** INTERNAL ERRORS ***"
+                                                try {
+                                                    allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'httpallure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: testsRootFolder + '/allure-results']])
                                                 }
-                                                if(findStringInBuildLog("ERROR collecting"))
-                                                {
-                                                    currentBuild.displayName = "${currentBuild.displayName} | *** COLLECTION ERRORS ***"
+                                                catch (error) {
+                                                    echo error.message
                                                 }
-                                                if(findStringInBuildLog("OSError:"))
-                                                {
-                                                    currentBuild.displayName = "${currentBuild.displayName} | *** OS ERRORS ***"
+                                                try {
+                                                    junit testsRootFolder + '/junit-results/TESTS-*.xml'
+                                                    env.testSummary = getTestSummary()
+                                                    currentBuild.displayName = "${currentBuild.displayName} | ${testSummary}"
                                                 }
-                                                if(findStringInBuildLog("script returned exit code -"))
-                                                {
-                                                    currentBuild.displayName = "${currentBuild.displayName} | *** EXIT CODES <> 0 ***"
+                                                catch (error) {
+                                                    echo error.message
                                                 }
+                                                script
+                                                        {
+                                                            if (findStringInBuildLog("INTERNALERROR>")) {
+                                                                currentBuild.displayName = "${currentBuild.displayName} | *** INTERNAL ERRORS ***"
+                                                            }
+                                                            if (findStringInBuildLog("ERROR collecting")) {
+                                                                currentBuild.displayName = "${currentBuild.displayName} | *** COLLECTION ERRORS ***"
+                                                            }
+                                                            if (findStringInBuildLog("OSError:")) {
+                                                                currentBuild.displayName = "${currentBuild.displayName} | *** OS ERRORS ***"
+                                                            }
+                                                            if (findStringInBuildLog("script returned exit code -")) {
+                                                                currentBuild.displayName = "${currentBuild.displayName} | *** EXIT CODES <> 0 ***"
+                                                            }
+                                                        }
+                                                //                                    smartSlackNotification()
+                                                archive "**/*.log"
                                             }
-//                                    smartSlackNotification()
-                                    archive "**/*.log"
                                 }
                     }
         }

@@ -11,7 +11,6 @@ pipeline
             parameters
             {
                 choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
-                string(name: 'ENV', description: 'choose environment (ci,qa2,prod,new,qa,stg,dynatrace_qa,dynatrace_prod) ', defaultValue: 'ci')
                 string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
             }
 
@@ -27,12 +26,6 @@ pipeline
                 {
                     steps
                     {
-//                        script
-//                        {
-//                            currentBuild.displayName = "#${BUILD_ID} | [Node] ${env.NODE_NAME} | ${TESTS_TO_RUN}"
-//                            currentBuild.description = "[TEST] ${TESTS_TO_RUN} [BRANCH] ${BRANCH} [DRIVER] ${DRIVER} [ENV] ${ENV}"
-//                        }
-
                         checkout([
                                 $class: 'GitSCM', branches: [[name: 'master']],
                                 userRemoteConfigs: [[url: 'https://github.com/eliranshani/selenium-docker-allure.git']]

@@ -82,20 +82,21 @@ pipeline
             post
             {
                 always
-                try
                 {
-                    allure([
-                            commandline: '2.5.0',
-                            includeProperties: false,
-                            jdk: '',
-                            properties: [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']],
-                            reportBuildPolicy: 'ALWAYS',
-                            results: [[path: 'blazedemo_app/allure-results']]
-                    ])
-                }
-                catch (error)
-                {
-                    echo error.message
+                    try {
+                        allure([
+                                commandline      : '2.5.0',
+                                includeProperties: false,
+                                jdk              : '',
+                                properties       : [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']],
+                                reportBuildPolicy: 'ALWAYS',
+                                results          : [[path: 'blazedemo_app/allure-results']]
+                        ])
+                    }
+                    catch (error) {
+                        echo error.message
+
+                    }
                 }
             }
         }

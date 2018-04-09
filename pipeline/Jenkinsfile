@@ -61,7 +61,8 @@ pipeline
                                 def now = new Date()
                                 tstamp = now.format("yyyyMMdd-HH:mm:ss.SSSS", TimeZone.getTimeZone('UTC'))
 
-                                sh "docker run --privileged" +
+                                sh "docker run " +
+                                        "--privileged " +
                                         "--shm-size=1g " +                                                                  // shared memory size is set to 1G to prevent chromedriver memory leak
                                         "--rm " +                                                                           // remove container at the end of the session
                                         "-e PYTHONPATH=/code/ " +                                                           // environment variable support

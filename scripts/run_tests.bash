@@ -21,7 +21,7 @@ docker build ${PROJECT_DIR} -t ${PROJECT_IMAGE}
 # Set the working directory as the root folder in the image
 # Set the PYTHONPATH to the root folder in the image
 # Run the project image as declared above
-docker run --rm \
+docker run --rm --privileged \
     -v $(pwd)/$PROJECT_DIR/$ALLURE_RESULTS_DIR:/code/$ALLURE_RESULTS_DIR \
     -v $(pwd)/blazedemo_app/:/code/ \
     -w=/code \

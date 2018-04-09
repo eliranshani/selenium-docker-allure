@@ -7,7 +7,7 @@ RUN easy_install -U setuptools
 RUN pip install pytest-dependency
 
 # Dokcer entry
-COPY docker-entry.sh .
+COPY blazedemo_app/docker-entry.sh .
 ENTRYPOINT ["/docker-entry.sh"]
 
 CMD ["/bin/true"]

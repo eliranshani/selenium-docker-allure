@@ -96,7 +96,7 @@ pipeline
                     }
             post
                     {
-                        stage('Generate Report')
+                        always('Generate Report')
                                 {
                                     steps
                                             {

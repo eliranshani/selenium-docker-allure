@@ -39,7 +39,7 @@ This project allows other developers to understand how to:
 ## Contributors
 
 Gilad Peleg
-Elad Kolander
+Elad Kollender
 Eliran Shani
 
 ## License

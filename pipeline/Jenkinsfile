@@ -20,11 +20,11 @@ pipeline
                 {
                     steps
                     {
-                        script
-                        {
-                            currentBuild.displayName = "#${BUILD_ID} | [Node] ${env.NODE_NAME} | ${TESTS_TO_RUN}"
-                            currentBuild.description = "[TEST] ${TESTS_TO_RUN} [BRANCH] ${BRANCH} [DRIVER] ${DRIVER} [ENV] ${ENV}"
-                        }
+//                        script
+//                        {
+//                            currentBuild.displayName = "#${BUILD_ID} | [Node] ${env.NODE_NAME} | ${TESTS_TO_RUN}"
+//                            currentBuild.description = "[TEST] ${TESTS_TO_RUN} [BRANCH] ${BRANCH} [DRIVER] ${DRIVER} [ENV] ${ENV}"
+//                        }
 
                         checkout([
                                 $class: 'GitSCM', branches: [[name: 'master']],

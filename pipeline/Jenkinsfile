@@ -80,12 +80,14 @@ pipeline
             }
             post
             {
-                always('Generate Report')
+                stages
                 {
-                    steps
+                    stage('Generate Allure Report')
                     {
-                        allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: 'blazedemo_app/allure-results']])
-                        archive "**/*.log"
+                        steps
+                        {
+                            allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: 'blazedemo_app/allure-results']])
+                        }
                     }
                 }
             }

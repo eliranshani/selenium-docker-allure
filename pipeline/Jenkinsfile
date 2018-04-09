@@ -1,13 +1,5 @@
 pipeline
         {
-//            agent
-//            {
-//                dockerfile
-//                {
-//                    filename "selenium-base-image/Dockerfile"
-//                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock"
-//                }
-//            }
             parameters
             {
                 choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
@@ -31,7 +23,7 @@ pipeline
                                 userRemoteConfigs: [[url: 'https://github.com/eliranshani/selenium-docker-allure.git']]
                         ])
 
-                        // Allure report
+                        // Create Allure report folders and grant relevant permissions
                         sh "mkdir -p ./blazedemo_app/allure-results"
                         sh "rm -rf ./blazedemo_app/allure-results/*"
                         sh "chown jenkins:jenkins ./blazedemo_app/allure-results"
@@ -83,14 +75,59 @@ pipeline
             {
                 always
                 {
-                    allure([
-                            commandline      : '2.5.0',
-                            includeProperties: false,
-                            jdk              : '',
-                            properties       : [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']],
-                            reportBuildPolicy: 'ALWAYS',
-                            results          : [[path: 'blazedemo_app/allure-results']]
-                    ])
+                    // Generate Allure Report
+                    generateAllureReport()
+
+                    // Send Slack notification
+                    sendSlackNotification()
                 }
             }
         }
+
+// Generate Allure report function
+def generateAllureReport()
+    {
+        try
+        {
+            allure([
+                    commandline      : '2.5.0',
+                    includeProperties: false,
+                    jdk              : '',
+                    properties       : [[key: 'allure.tests.management.pattern', value: 'http://tms.company.com/%s']],
+                    reportBuildPolicy: 'ALWAYS',
+                    results          : [[path: 'blazedemo_app/allure-results']]
+            ])
+        }
+        catch (error)
+        {
+            error.message
+        }
+    }
+
+// Send Slack notification function
+def sendSlackNotification()
+    {
+        // build status of null means successful
+        buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+        // Default values
+        def colorName = 'RED'
+        def colorCode = '#FF0000'
+        def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+        def summary = "${subject} (${env.BUILD_URL})"
+
+        // Override default values based on build status
+        if (buildStatus == 'STARTED') {
+            color = 'YELLOW'
+            colorCode = '#FFFF00'
+        } else if (buildStatus == 'SUCCESSFUL') {
+            color = 'GREEN'
+            colorCode = '#00FF00'
+        } else {
+            color = 'RED'
+            colorCode = '#FF0000'
+        }
+
+        // Send notifications
+        slackSend (color: colorCode, message: summary)
+    }

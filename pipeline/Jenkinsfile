@@ -1,134 +1,91 @@
-//properties([[$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], parameters([[$class: 'ChoiceParameter', choiceType: 'PT_MULTI_SELECT', description: 'Select test(s) to run', filterLength: 1, filterable: true, name: 'TESTS_TO_RUN', randomName: 'choice-parameter-638797097413171', script: [$class: 'GroovyScript', fallbackScript: [classpath: [], sandbox: false, script: ''], script: [classpath: [], sandbox: false, script: '''import groovy.io.FileType
-//
-//
-//return list''']]]])])
-//
-//clearWorkspaceAsRoot()
-
 pipeline
         {
             parameters
-                    {
-                        choice(name: 'DRIVER', defaultValue: 'chrome', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
-                        string(name: 'ENV', description: 'choose environment (ci,qa2,prod,new,qa,stg,dynatrace_qa,dynatrace_prod) ', defaultValue: 'ci')
-                        string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
-                    }
+            {
+                choice(name: 'DRIVER', defaultValue: 'chrome', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
+                string(name: 'ENV', description: 'choose environment (ci,qa2,prod,new,qa,stg,dynatrace_qa,dynatrace_prod) ', defaultValue: 'ci')
+                string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
+            }
 
             options
-                    {
-                        buildDiscarder(logRotator(numToKeepStr: '100'))
-//                        ansiColor('xterm')
-                        timestamps()
-                    }
+            {
+                buildDiscarder(logRotator(numToKeepStr: '100'))
+                timestamps()
+            }
 
             agent any
             stages
+            {
+                stage('SCM: code update')
+                {
+                    steps
                     {
-                        stage('SCM: code update')
-                                {
-                                    steps
-                                            {
-                                                script
-                                                        {
-                                                            currentBuild.displayName = "#${BUILD_ID} | [Node] ${env.NODE_NAME} | ${TESTS_TO_RUN}"
-                                                            currentBuild.description = "[TEST] ${TESTS_TO_RUN} [BRANCH] ${BRANCH} [DRIVER] ${DRIVER} [ENV] ${ENV}"
-                                                        }
-
-                                                checkout([
-                                                        $class: 'GitSCM', branches: [[name: 'master']],
-                                                        userRemoteConfigs: [[url: 'https://github.com/eliranshani/selenium-docker-allure.git']]
-                                                ])
-
-                                                // Allure report
-                                                sh "mkdir -p ./blazedemo_app/allure-results"
-                                                sh "rm -rf ./blazedemo_app/allure-results/*"
-                                                sh "chown jenkins:jenkins ./blazedemo_app/allure-results"
-//                                                Junit report
-//                                                sh "mkdir -p ./blazedemo_app/junit-results"
-//                                                sh "chown jenkins:jenkins ./blazedemo_app/junit-results"
-//                                                sh "rm -rf ./blazedemo_app/junit-results/*"
-//                                                sh "env"
-                                            }
-                                }
-                        stage('Docker build')
-                                {
-                                    steps
-                                            {
-                                                script
-                                                        {
-                                                            sh "cp docker/selenium-base-image/Dockerfile ."
-                                                            docker.build("blazemeter/selenium_base")
-                                                            sh "cp docker/selenium-automation-run/Dockerfile ."
-                                                            docker.build("blazemeter/selenium_image")
-                                                        }
-                                            }
-                                }
-                        stage('Run test')
+                        script
                         {
-                            steps
-                            {
-                                script
-                                {
-                                    try
-                                    {
-                                        def now = new Date()
-                                        tstamp = now.format("yyyyMMdd-HH:mm:ss.SSSS", TimeZone.getTimeZone('UTC'))
+                            currentBuild.displayName = "#${BUILD_ID} | [Node] ${env.NODE_NAME} | ${TESTS_TO_RUN}"
+                            currentBuild.description = "[TEST] ${TESTS_TO_RUN} [BRANCH] ${BRANCH} [DRIVER] ${DRIVER} [ENV] ${ENV}"
+                        }
 
-                                        sh "docker run " +
-                                                "--shm-size=1g " +                                                                  // shared memory size is set to 1G to prevent chromedriver memory leak
-                                                "--rm " +                                                                           // remove container at the end of the session
-                                                "-e PYTHONPATH=/code/ " +                                                           // environment variable support
-                                                "-w=/code " +                                                                       // setting working directory
-                                                "-v `pwd`/blazedemo_app:/code " +                                                   // mount git repository to the container
-                                                "blazemeter/selenium_image:latest " +                                               // the specific image that being used (latest image by default)
-                                                "-v"                                                                                // verbose (for debugging purpose)
-                                    }
-                                    catch (error)
-                                    {
-                                    }
-                                }
+                        checkout([
+                                $class: 'GitSCM', branches: [[name: 'master']],
+                                userRemoteConfigs: [[url: 'https://github.com/eliranshani/selenium-docker-allure.git']]
+                        ])
+
+                        // Allure report
+                        sh "mkdir -p ./blazedemo_app/allure-results"
+                        sh "rm -rf ./blazedemo_app/allure-results/*"
+                        sh "chown jenkins:jenkins ./blazedemo_app/allure-results"
+                    }
+                }
+                stage('Docker build')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            sh "cp docker/selenium-base-image/Dockerfile ."
+                            docker.build("blazemeter/selenium_base")
+                            sh "cp docker/selenium-automation-run/Dockerfile ."
+                            docker.build("blazemeter/selenium_image")
+                        }
+                    }
+                }
+                stage('Run test')
+                {
+                    steps
+                    {
+                        script
+                        {
+                            try
+                            {
+                                def now = new Date()
+                                tstamp = now.format("yyyyMMdd-HH:mm:ss.SSSS", TimeZone.getTimeZone('UTC'))
+
+                                sh "docker run " +
+                                        "--shm-size=1g " +                                                                  // shared memory size is set to 1G to prevent chromedriver memory leak
+                                        "--rm " +                                                                           // remove container at the end of the session
+                                        "-e PYTHONPATH=/code/ " +                                                           // environment variable support
+                                        "-w=/code " +                                                                       // setting working directory
+                                        "-v `pwd`/blazedemo_app:/code " +                                                   // mount git repository to the container
+                                        "blazemeter/selenium_image:latest " +                                               // the specific image that being used (latest image by default)
+                                        "-v"                                                                                // verbose (for debugging purpose)
+                            }
+                            catch (error)
+                            {
                             }
                         }
                     }
+                }
+            }
             post
+            {
+                always('Generate Report')
+                {
+                    steps
                     {
-                        always('Generate Report')
-                                {
-                                    steps
-                                            {
-//                                                try {
-                                                allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'httpallure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: testsRootFolder + '/allure-results']])
-//                                                }
-//                                                catch (error) {
-//                                                    echo error.message
-//                                                }
-//                                                try {
-//                                                    junit testsRootFolder + '/junit-results/TESTS-*.xml'
-//                                                    env.testSummary = getTestSummary()
-//                                                    currentBuild.displayName = "${currentBuild.displayName} | ${testSummary}"
-//                                                }
-//                                                catch (error) {
-//                                                    echo error.message
-//                                                }
-//                                                script
-//                                                        {
-//                                                            if (findStringInBuildLog("INTERNALERROR>")) {
-//                                                                currentBuild.displayName = "${currentBuild.displayName} | *** INTERNAL ERRORS ***"
-//                                                            }
-//                                                            if (findStringInBuildLog("ERROR collecting")) {
-//                                                                currentBuild.displayName = "${currentBuild.displayName} | *** COLLECTION ERRORS ***"
-//                                                            }
-//                                                            if (findStringInBuildLog("OSError:")) {
-//                                                                currentBuild.displayName = "${currentBuild.displayName} | *** OS ERRORS ***"
-//                                                            }
-//                                                            if (findStringInBuildLog("script returned exit code -")) {
-//                                                                currentBuild.displayName = "${currentBuild.displayName} | *** EXIT CODES <> 0 ***"
-//                                                            }
-//                                                        }
-                                                //                                    smartSlackNotification()
-                                                archive "**/*.log"
-                                            }
-                                }
+                        allure(commandline: '2.5.0', includeProperties: false, jdk: '', properties: [[key: 'httpallure.tests.management.pattern', value: 'http://tms.company.com/%s']], results: [[path: testsRootFolder + '/allure-results']])
+                        archive "**/*.log"
                     }
+                }
+            }
         }
-

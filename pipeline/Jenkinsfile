@@ -9,11 +9,9 @@ pipeline
         {
             parameters
                     {
-                        choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
+                        choice(name: 'DRIVER', defaultValue: 'chrome', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
                         string(name: 'ENV', description: 'choose environment (ci,qa2,prod,new,qa,stg,dynatrace_qa,dynatrace_prod) ', defaultValue: 'ci')
-//                        password(name: 'API_KEY_ID', description: 'enter admin api key id ')
-//                        password(name: 'API_KEY_SECRET', description: 'enter admin api key SECRET ')
-                        string(name: 'ADDITIONAL_TESTS_ARGS', defaultValue: '', description: 'Additional tests arguments')
+                        string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
                     }
 
             options
@@ -45,11 +43,11 @@ pipeline
                                                 sh "mkdir -p ./blazedemo_app/allure-results"
                                                 sh "rm -rf ./blazedemo_app/allure-results/*"
                                                 sh "chown jenkins:jenkins ./blazedemo_app/allure-results"
-                                                // Junit report
-                                                sh "mkdir -p ./blazedemo_app/junit-results"
-                                                sh "chown jenkins:jenkins ./blazedemo_app/junit-results"
-                                                sh "rm -rf ./blazedemo_app/junit-results/*"
-//                sh "env"
+//                                                Junit report
+//                                                sh "mkdir -p ./blazedemo_app/junit-results"
+//                                                sh "chown jenkins:jenkins ./blazedemo_app/junit-results"
+//                                                sh "rm -rf ./blazedemo_app/junit-results/*"
+//                                                sh "env"
                                             }
                                 }
                         stage('Docker build')
@@ -66,33 +64,31 @@ pipeline
                                             }
                                 }
                         stage('Run test')
+                        {
+                            steps
+                            {
+                                script
                                 {
-                                    steps
-                                            {
-                                                script
-                                                        {
-                                                            try
-                                                            {
-                                                                def now = new Date()
-                                                                tstamp = now.format("yyyyMMdd-HH:mm:ss.SSSS", TimeZone.getTimeZone('UTC'))
+                                    try
+                                    {
+                                        def now = new Date()
+                                        tstamp = now.format("yyyyMMdd-HH:mm:ss.SSSS", TimeZone.getTimeZone('UTC'))
 
-                                                                sh "docker run " +
-                                                                        "--shm-size=1g " +                                                                  // shared memory size is set to 1G to prevent chromedriver memory leak
-                                                                        "--rm " +                                                                           // remove container at the end of the session
-                                                                        "-e PYTHONPATH=/code/ " +                                                           // environment variable support
-                                                                        "-w=/code " +                                                                       // setting working directory
-                                                                        "-v `pwd`/blazedemo_app:/code " +                                                   // mount git repository to the container
-                                                                        "blazemeter/selenium_image:latest " +                                               // the specific image that being used (latest image by default)
-                                                                        "${additional_args} " +                                                             // additional pytest arguments
-                                                                        "--junitxml=/code/junit-results/TESTS-${tstamp}.xml " +                             // generate JUnit results files
-                                                                        "-v"                                                                                // verbose (for debugging purpose)
-                                                            }
-                                                            catch (error)
-                                                            {
-                                                            }
-                                                        }
-                                            }
+                                        sh "docker run " +
+                                                "--shm-size=1g " +                                                                  // shared memory size is set to 1G to prevent chromedriver memory leak
+                                                "--rm " +                                                                           // remove container at the end of the session
+                                                "-e PYTHONPATH=/code/ " +                                                           // environment variable support
+                                                "-w=/code " +                                                                       // setting working directory
+                                                "-v `pwd`/blazedemo_app:/code " +                                                   // mount git repository to the container
+                                                "blazemeter/selenium_image:latest " +                                               // the specific image that being used (latest image by default)
+                                                "-v"                                                                                // verbose (for debugging purpose)
+                                    }
+                                    catch (error)
+                                    {
+                                    }
                                 }
+                            }
+                        }
                     }
             post
                     {

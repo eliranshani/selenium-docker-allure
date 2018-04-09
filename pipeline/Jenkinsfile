@@ -105,7 +105,7 @@ def generateAllureReport()
     }
 
 // Send Slack notification function
-def sendSlackNotification()
+def sendSlackNotification(String buildStatus = 'STARTED')
     {
         // build status of null means successful
         buildStatus =  buildStatus ?: 'SUCCESSFUL'

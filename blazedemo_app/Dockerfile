@@ -11,5 +11,5 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Set Dokcer entry
-COPY docker-entry.sh /code
+COPY blazedemo_app/docker-entry.sh /code
 ENTRYPOINT ["/code/docker-entry.sh"]

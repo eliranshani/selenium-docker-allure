@@ -28,3 +28,6 @@ docker run --rm \
     -e PYTHONPATH=/code/ \
     ${PROJECT_IMAGE} \
     "$PYTEST_ARGUMENTS"
+
+# to cleanup python compiled files
+find . -name "*.pyc" -exec rm -rf {} \;

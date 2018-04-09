@@ -80,7 +80,7 @@ pipeline
             }
             post
             {
-                stages
+                always
                 {
                     stage('Generate Allure Report')
                     {

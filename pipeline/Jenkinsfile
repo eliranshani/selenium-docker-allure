@@ -137,6 +137,6 @@ def sendSlackNotification(String buildStatus = 'STARTED')
 
         // Send notifications
 //        slackSend (color: colorCode, message: summary)
-        config.channel = "jenkins_notifications"
-        slackSend (color: colorCode, message: summary, channel: "#${config.channel}" )K
+        channel = "jenkins_notifications"
+        slackSend (color: colorCode, message: summary, channel: "#${channel}")
     }

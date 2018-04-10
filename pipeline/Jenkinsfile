@@ -112,10 +112,10 @@ def generateAllureReport()
     }
 
 // Send Slack notification function
-def sendSlackNotification(String buildStatus = 'STARTED')
+def sendSlackNotification()
     {
         // build status of null means successful
-        buildStatus =  buildStatus ?: 'SUCCESSFUL'
+        buildStatus =  currentBuild.result
 
         // Default values
         def colorName = 'RED'
@@ -136,7 +136,6 @@ def sendSlackNotification(String buildStatus = 'STARTED')
         }
 
         // Send notifications
-//        slackSend (color: colorCode, message: summary)
         channel = "jenkins_notifications"
         slackSend (color: colorCode, message: summary, channel: "#${channel}")
     }

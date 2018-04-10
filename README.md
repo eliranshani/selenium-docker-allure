@@ -27,7 +27,7 @@ $ open http://localhost:8000
 
 ### Integrate tests inside Jenkins Pipeline
 ```bash
-0. (Make sure you Jenkins Pipeline is supported by Docker and have Allure and Slack plugins installed)
+0. (Make sure your Jenkins Pipeline is supported by Docker and have Allure and Slack plugins installed)
 1. Create Jenkins Pipeline job
 2. Connect the job with pipeline/Jenkinsfile
 3. Run the job

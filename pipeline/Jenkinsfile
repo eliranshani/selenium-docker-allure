@@ -128,7 +128,7 @@ def sendSlackNotification()
             color = 'YELLOW'
             colorCode = '#FFFF00'
 
-        } else if (buildStatus == 'SUCCESS') {
+        } else if (buildStatus == 'SUCCESSFUL') {
             color = 'GREEN'
             colorCode = '#00FF00'
 

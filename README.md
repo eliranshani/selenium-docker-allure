@@ -25,12 +25,21 @@ $ python -m SimpleHTTPServer 8000
 $ open http://localhost:8000
 ```
 
+### Integrate tests inside Jenkins Pipeline
+```bash
+0. (Make sure your Jenkins Pipeline is supported by Docker and have Allure and Slack plugins installed)
+1. Create Jenkins Pipeline job
+2. Connect the job with pipeline/Jenkinsfile
+3. Run the job
+```
+
 ## Motivation
 
 This project allows other developers to understand how to:
 1. Create auto tests in python under py.test convention
 2. Run tests with Docker
 3. Export results into Allure report
+4. Integrate tests inside Jenkins Pipeline
 
 ## Links
 

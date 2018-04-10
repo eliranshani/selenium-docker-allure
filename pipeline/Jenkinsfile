@@ -2,22 +2,29 @@ pipeline
         {
             parameters
             {
+                // Define DRIVER parameter for running the test
                 choice(name: 'DRIVER', description: 'Choose browser', choices: 'chrome\nfirefox\nheadless')
+
+                // Define test path to run
                 string(name: 'TESTS_TO_RUN', defaultValue: 'tests/test_purchase_tickets.py', description: 'choose test to run')
             }
 
             options
             {
+                // keep 100 last builds
                 buildDiscarder(logRotator(numToKeepStr: '100'))
+
+                // add timestamp
                 timestamps()
             }
-            agent any
+            agent any // run the
             stages
             {
                 stage('SCM: code update')
                 {
                     steps
                     {
+                        // checking out repository
                         checkout([
                                 $class: 'GitSCM', branches: [[name: 'master']],
                                 userRemoteConfigs: [[url: 'https://github.com/eliranshani/selenium-docker-allure.git']]
@@ -129,5 +136,7 @@ def sendSlackNotification(String buildStatus = 'STARTED')
         }
 
         // Send notifications
-        slackSend (color: colorCode, message: summary)
+//        slackSend (color: colorCode, message: summary)
+        config.channel = "jenkins_notifications"
+        slackSend (color: colorCode, message: summary, channel: "#${config.channel}" )K
     }

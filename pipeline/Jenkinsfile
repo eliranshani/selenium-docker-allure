@@ -68,9 +68,7 @@ pipeline
                                         "-w=/code " +                                                                       // setting working directory
                                         "-v `pwd`/blazedemo_app:/code " +                                                   // mount git repository to the container
                                         "blazemeter/selenium_image:latest " +                                               // the specific image that being used (latest image by default)
-                                        "-v"
-                                // verbose (for debugging purpose)
-                                sendSlackNotification()
+                                        "-v"                                                                                // verbose (for debugging purpose)
                             }
                             catch (error)
                             {
@@ -130,7 +128,7 @@ def sendSlackNotification()
             color = 'YELLOW'
             colorCode = '#FFFF00'
 
-        } else if (buildStatus == 'SUCCESSFUL') {
+        } else if (buildStatus == 'SUCCESS') {
             color = 'GREEN'
             colorCode = '#00FF00'
 

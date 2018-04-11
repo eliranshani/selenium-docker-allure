@@ -48,15 +48,15 @@ def test_find_flights(driver, open_blazedemo, from_port, to_port):
     choose_arrival_flight(driver, arrival_flight=to_port)
     submit_form(driver)
 
-    assert from_port in utils.get_text(driver, By.TAG_NAME, "h3")
-    assert to_port in utils.get_text(driver, By.TAG_NAME, "h3")
+    assert from_port in utils.get_text(driver, By.TAG_NAME, "h3"), "{} was not found".format(from_port)
+    assert to_port in utils.get_text(driver, By.TAG_NAME, "h3"), "{} was not found".format(to_port)
     assert "reserve.php" in driver.current_url
 
     # Choose flight
     submit_form(driver)
 
-    assert from_port in utils.get_text(driver, By.TAG_NAME, "h2")
-    assert to_port in utils.get_text(driver, By.TAG_NAME, "h2")
+    assert from_port in utils.get_text(driver, By.TAG_NAME, "h2"), "{} was not found".format(from_port)
+    assert to_port in utils.get_text(driver, By.TAG_NAME, "h2"), "{} was not found".format(to_port)
     assert "purchase.php" in driver.current_url
 
     # Purchase flight

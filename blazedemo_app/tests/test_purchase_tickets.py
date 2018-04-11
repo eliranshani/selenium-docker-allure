@@ -39,7 +39,7 @@ def open_blazedemo(driver, url):
     ("San Diego", "New York"),
     ("Mexico City", "Dublin"),
     # fail on purpose to verify screenshot was added to allure report
-    ("Tel Aviv", "Dubai")
+    # ("Tel Aviv", "Dubai")
 ])
 def test_find_flights(driver, open_blazedemo, from_port, to_port):
 

@@ -10,7 +10,7 @@ Running Selenium tests under py.test convention with docker support.
 ### Run tests and generate results
 ```bash
 # Run with py.test arguments (-v for verbose output)
-$ ./scripts/run-tests.bash --env=$ENV tests/test_purhcase_tickets.py -v
+$ ./scripts/run_tests.bash --env=$ENV blazedemo_app/tests/test_purhcase_tickets.py -v
 ```
 
 ### Run allure to generate allure report

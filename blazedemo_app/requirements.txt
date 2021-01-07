@@ -1,7 +1,7 @@
 arrow==0.8.0
 colorama==0.3.7
 enum34==1.1.6
-lxml==3.6.0
+lxml==4.6.2
 moment==0.5.1
 namedlist==1.7
 py==1.4.31
